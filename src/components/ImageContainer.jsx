@@ -1,5 +1,6 @@
 import { Box } from "@mui/material";
 import danny from "../assets/danny.jpg";
+import styles from "../styles";
 
 function ImageContainer() {
     return (
@@ -7,7 +8,7 @@ function ImageContainer() {
             component="img"
             src={ danny }
             alt="Mystery Cat Meme" 
-            sx={{ maxHeight: '300px', maxWidth: '400px', borderRadius: '4px', boxShadow: 3 }} 
+            sx={styles.image} 
         />
     )
 }
