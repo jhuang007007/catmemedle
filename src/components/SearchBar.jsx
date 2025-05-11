@@ -1,5 +1,6 @@
 import Autocomplete from "@mui/material/Autocomplete";
 import { TextField } from "@mui/material";
+import styles from "../styles";
 
 function SearchBar({ options, onSelect }) {
     return (
@@ -7,7 +8,7 @@ function SearchBar({ options, onSelect }) {
             options={options}
             onChange={(event, value) => onSelect(value)}
             renderInput={(params) => <TextField {...params} label="Guess a meme..." variant="outlined" />}
-            sx={{width: '80%', backgroundColor: 'white'}}
+            sx={styles.searchbar}
         />
     );
 }
