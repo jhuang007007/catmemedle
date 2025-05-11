@@ -10,6 +10,7 @@ import theme from './theme.jsx'
 import Guess from './components/Guess.jsx'
 import { ThemeProvider } from '@mui/material/styles'
 import { CssBaseline } from '@mui/material'
+import ResultPopup from './components/ResultPopup.jsx'
 
 const options = ["cat meme", "cat", "meme", "funny cat", "funny meme", "cat video", "cat picture", "cat gif", "cat image", "cat photo", "cat meme generator", "cat meme maker", "cat meme template", "cat meme creator", "cat meme app", "cat meme website", "cat meme search engine"
 ]
@@ -28,7 +29,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Box>
-        <Box sx={styles.container} height={"90vh"} bgcolor={"peachpuff"}>
+        <Box sx={styles.container} height={"90vh"} >
           <Box sx={styles.container}>
             <Header />
             {!dailyStart && <LandingPage />}
@@ -41,6 +42,7 @@ function App() {
             {count>=3 && <Guess guess={guess[2]} />}
             {count>=4 && <Guess guess={guess[3]} />}
             {count==5 && <Guess guess={guess[4]} />}
+            {count==5 && <ResultPopup />}
           </Box>
         </Box>
         <Box sx={styles.container}>

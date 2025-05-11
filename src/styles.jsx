@@ -41,6 +41,16 @@ const styles = {
       backgroundColor: '#fff8d6',
     },
   },
+  resultpopup: {
+    position: 'fixed',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    backgroundColor: '#fff8d6',
+    padding: 2,
+    borderRadius: 2,
+    boxShadow: 3,
+  },
 }
 
 export default styles;
