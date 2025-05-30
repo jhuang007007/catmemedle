@@ -1,5 +1,3 @@
-import { createTheme } from "@mui/material/styles";
-
 const styles = {
   container: {
     display: 'flex',
@@ -21,7 +19,9 @@ const styles = {
     boxShadow: 3
   },
   image: {
+    objectFit: 'contain',
     maxWidth: '400px',
+    maxHeight: '50vh',
     width: '60vw',
     borderRadius: '4px',
     boxShadow: 3 
@@ -42,10 +42,8 @@ const styles = {
     },
   },
   resultpopup: {
-    position: 'fixed',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
+    alignItems: 'center',
+    border: '2px solid black',
     backgroundColor: '#fff8d6',
     padding: 2,
     borderRadius: 2,

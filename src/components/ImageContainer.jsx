@@ -1,12 +1,11 @@
 import { Box } from "@mui/material";
-import danny from "../assets/danny.jpg";
 import styles from "../styles";
 
-function ImageContainer() {
+function ImageContainer({img}) {
     return (
         <Box 
             component="img"
-            src={ danny }
+            src={ img }
             alt="Mystery Cat Meme" 
             sx={styles.image} 
         />

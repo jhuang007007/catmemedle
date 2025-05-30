@@ -1,13 +1,13 @@
 import { Box } from "@mui/material";
 import styles from "../styles";
 
-function ResultPopup() {
+function ResultPopup({ result, answer }) {
   return (
     <Box
       sx={styles.resultpopup}
     >
-      <h2>Result</h2>
-      <p>Your guess was correct!</p>
+      {result && <p>Your guess was correct!</p>}
+      <p>The correct answer was { answer }.</p>
     </Box> 
   );
 }
