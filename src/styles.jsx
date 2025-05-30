@@ -21,8 +21,8 @@ const styles = {
   image: {
     objectFit: 'contain',
     maxWidth: '400px',
-    maxHeight: '50vh',
-    width: '60vw',
+    maxHeight: '40vh',
+    width: '50vw',
     borderRadius: '4px',
     boxShadow: 3 
   },

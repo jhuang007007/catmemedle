@@ -41,7 +41,7 @@ function App() {
       setGameEnd(true)
       setResult(true)
     }
-    if (count === 5) {
+    if (count === 4) {
       setGameEnd(true)
     }
   }
