@@ -1,8 +1,11 @@
+import { Box } from "@mui/material";
+import styles from "../styles"
+
 function Header() {
   return (
-    <header className="header">
-      <h1>CATMEMEDLE</h1>
-    </header>
+    <Box sx={styles.header}>
+      <h1>Catmemedle</h1>
+    </Box>
   );
 }
 
