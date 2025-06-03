@@ -8,11 +8,11 @@ Catmemedle uses a combination of AWS S3 and DynamoDB to store the image data.
 
 # Image Processing
 
-Catmemedle uses an automated serverless approach to blur the images. Method adapted from [this blog post]([url](https://aws.amazon.com/blogs/compute/creating-a-serverless-face-blurring-service-for-photos-in-amazon-s3/)) by James Beswick @jbesw:
+Catmemedle uses an automated serverless approach to blur the images. Method adapted from [this blog post](https://aws.amazon.com/blogs/compute/creating-a-serverless-face-blurring-service-for-photos-in-amazon-s3/) by James Beswick @jbesw:
 
 1. When images uploaded to the S3 source bucket, S3 sends an event notification to an Amazon SQS queue.
 2. The Lambda service polls the SQS queue and invokes an AWS Lambda function when messages are available.
-3. The Lambda function uses Amazon Rekognition to detect cats via the [DetectLabelsCommand]([url](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/rekognition/command/DetectLabelsCommand/)) in the source image. The service returns the coordinates of the cats to the function.
+3. The Lambda function uses Amazon Rekognition to detect cats via the [DetectLabelsCommand](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/rekognition/command/DetectLabelsCommand/) in the source image. The service returns the coordinates of the cats to the function.
 4. After blurring the cats in the source image, the function stores the resulting image in the output S3 bucket.
 
 The Lambda function code was adapted from AWS-SDK V2 to AWS-SDK V3 and the detectFaces function was changed to detect cats instead.
