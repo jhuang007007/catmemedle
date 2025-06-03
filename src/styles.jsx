@@ -4,7 +4,10 @@ const styles = {
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    width: '100%'
+    width: '100%',
+    fontFamily: "Delius",
+    textShadow: '0px 0px 3px white',
+    color: '#826b58',
   },
   guess: {
     justifyContent: 'center',
@@ -83,10 +86,13 @@ const styles = {
   button: {
     width: '10vw',
     backgroundColor: '#d2af8f',
-    color: 'black',
     '&:hover': {
       backgroundColor: '#fff8d6',
     },
+    fontFamily: "Delius",
+    textShadow: '0px 0px 3px white',
+    color: '#826b58',
+    marginTop: 2,
   },
   searchbar: {
     width: '80%',
@@ -106,8 +112,8 @@ const styles = {
   },
   header: {
     fontFamily: "Delius",
-    textShadow: '0px 0px 3px black',
-    color: 'white',
+    textShadow: '0px 0px 3px white',
+    color: '#826b58',
   },
   downIcon: {
     position: 'absolute',
