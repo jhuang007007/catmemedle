@@ -34,8 +34,8 @@ const fetchDaily = async ( initOptions, items ) => {
   const todayKey = `daily-result-${today.toISOString().split('T')[0]}`;
   const imageOfTheDay = initOptions[Math.floor(day/31 * initOptions.length)]
   const imageOfTheDayItem = items.find(item => item.memeName === imageOfTheDay)
-  const blurredImage = await getFileUrlFromAws(imageOfTheDay + '.jpg', 1800, import.meta.env.VITE_AWS_DESTINATION_NAME)
-  const unblurredImage = await getFileUrlFromAws(imageOfTheDay + '.jpg', 1800, import.meta.env.VITE_AWS_SOURCE_NAME)
+  const blurredImage = await getFileUrlFromAws(imageOfTheDay + '.jpg', 1800, process.env.AWS_DESTINATION_NAME)
+  const unblurredImage = await getFileUrlFromAws(imageOfTheDay + '.jpg', 1800, process.env.AWS_SOURCE_NAME)
 
   return { imageOfTheDay, imageOfTheDayItem, blurredImage, unblurredImage, todayKey }
 }
@@ -44,8 +44,8 @@ const fetchDaily = async ( initOptions, items ) => {
 const fetchRandomImage = async ( initOptions, items ) => {
   const randomImage = initOptions[Math.floor(Math.random() * initOptions.length)]
   const randomImageItem = items.find(item => item.memeName === randomImage)
-  const blurredRandomImage = await getFileUrlFromAws(randomImage + '.jpg', 1800, import.meta.env.VITE_AWS_DESTINATION_NAME)
-  const unblurredRandomImage = await getFileUrlFromAws(randomImage + '.jpg', 1800, import.meta.env.VITE_AWS_SOURCE_NAME)
+  const blurredRandomImage = await getFileUrlFromAws(randomImage + '.jpg', 1800, process.env.AWS_DESTINATION_NAME)
+  const unblurredRandomImage = await getFileUrlFromAws(randomImage + '.jpg', 1800, process.env.AWS_SOURCE_NAME)
 
   return { randomImage, randomImageItem, blurredRandomImage, unblurredRandomImage }
 }

@@ -3,15 +3,15 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
 // Initialize an S3 client with provided credentials
 const s3Client = new S3Client({
-    region: import.meta.env.VITE_AWS_REGION,
+    region: process.env.AWS_REGION,
     credentials: {
-        accessKeyId: import.meta.env.VITE_AWS_ACCESSKEYID,
-        secretAccessKey: import.meta.env.VITE_AWS_SECRETACCESSKEY
+        accessKeyId: process.env.AWS_ACCESSKEYID,
+        secretAccessKey: process.env.AWS_SECRETACCESSKEY
     }
 });
 
 export const listSourceBucket = async () => {
-  const command = new ListObjectsCommand({ Bucket: import.meta.env.VITE_AWS_SOURCE_NAME });
+  const command = new ListObjectsCommand({ Bucket: process.env.AWS_SOURCE_NAME });
   const response = await s3Client.send(command);
   return response;
 }

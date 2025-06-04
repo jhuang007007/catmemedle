@@ -1,10 +1,10 @@
 import { BatchGetItemCommand, DynamoDBClient } from "@aws-sdk/client-dynamodb";
 
 const client = new DynamoDBClient({
-    region: import.meta.env.VITE_AWS_REGION,
+    region: process.env.AWS_REGION,
     credentials: {
-        accessKeyId: import.meta.env.VITE_AWS_ACCESSKEYID,
-        secretAccessKey: import.meta.env.VITE_AWS_SECRETACCESSKEY
+        accessKeyId: process.env.AWS_ACCESSKEYID,
+        secretAccessKey: process.env.AWS_SECRETACCESSKEY
     }
 });
 
@@ -24,13 +24,13 @@ export const getItemsFromDynamoDB = async ( items ) => {
     }));
     const input = {
         RequestItems: {
-            [import.meta.env.VITE_AWS_TABLE_NAME]: {
+            [process.env.AWS_TABLE_NAME]: {
                 Keys: keys
             }
         }
     };
     const command = new BatchGetItemCommand(input);
     const response = await client.send(command);
-    const formattedResponse = response.Responses[import.meta.env.VITE_AWS_TABLE_NAME].map(formatItem);
+    const formattedResponse = response.Responses[process.env.AWS_TABLE_NAME].map(formatItem);
     return formattedResponse;
 };
