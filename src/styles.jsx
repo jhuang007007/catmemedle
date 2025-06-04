@@ -6,8 +6,8 @@ const styles = {
     alignItems: 'center',
     width: '100%',
     fontFamily: "Delius",
-    textShadow: '0px 0px 3px white',
-    color: '#826b58',
+    textShadow: '0px 0px 1px white',
+    color: '#65564a',
   },
   guess: {
     justifyContent: 'center',
@@ -26,7 +26,7 @@ const styles = {
     textAlign: 'center',
     width: '100%',
     textShadow: '0px 0px 3px white',
-    color: 'black',
+    color: '#65564a',
     marginBottom: '10px',
     marginTop: '10px',
     borderBottom: '2px solid black',
@@ -91,7 +91,7 @@ const styles = {
     },
     fontFamily: "Delius",
     textShadow: '0px 0px 3px white',
-    color: '#826b58',
+    color: '#65564a',
     marginTop: 2,
   },
   searchbar: {
@@ -113,7 +113,7 @@ const styles = {
   header: {
     fontFamily: "Delius",
     textShadow: '0px 0px 3px white',
-    color: '#826b58',
+    color: '#65564a',
   },
   downIcon: {
     position: 'absolute',
