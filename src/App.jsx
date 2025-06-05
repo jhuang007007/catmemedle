@@ -1,6 +1,6 @@
 import LandingPage from './components/LandingPage.jsx'
 import ImageContainer from './components/ImageContainer.jsx'
-import { useState, useEffect, use } from 'react'
+import { useState, useEffect } from 'react'
 import Button from '@mui/material/Button'
 import SearchBar from './components/SearchBar.jsx'
 import Header from './components/Header.jsx'
@@ -11,48 +11,33 @@ import Guess from './components/Guess.jsx'
 import { ThemeProvider } from '@mui/material/styles'
 import { CssBaseline } from '@mui/material'
 import ResultPopup from './components/ResultPopup.jsx'
-import { listSourceBucket, getFileUrlFromAws } from './S3.jsx'
 import Confetti from 'react-confetti-boom';
-import { getItemsFromDynamoDB } from './DynamoDB.jsx'
 import GuessHeaders from './components/GuessHeaders.jsx'
 
-// get options from S3 bucket
-const fetchOptionsFromS3 = async () => {
-  const initOptions = []
-  const sourceBucketList = await listSourceBucket();
-  sourceBucketList.Contents.forEach((item) => {
-    initOptions.push(item.Key.replace('.jpg', ''))
-  })
-  const items = await getItemsFromDynamoDB(initOptions)
-  return { initOptions, items }
-}
+const API_BASE = import.meta.env.VITE_API_BASE
 
-// daily play
-const fetchDaily = async ( initOptions, items ) => {
-  const today = new Date();
-  const day = today.getDate();
-  const todayKey = `daily-result-${today.toISOString().split('T')[0]}`;
-  const imageOfTheDay = initOptions[Math.floor(day/31 * initOptions.length)]
-  const imageOfTheDayItem = items.find(item => item.memeName === imageOfTheDay)
-  const blurredImage = await getFileUrlFromAws(imageOfTheDay + '.jpg', 1800, process.env.AWS_DESTINATION_NAME)
-  const unblurredImage = await getFileUrlFromAws(imageOfTheDay + '.jpg', 1800, process.env.AWS_SOURCE_NAME)
+const fetchOptions = async () => {
+  const res = await fetch(`${API_BASE}/options`);
+  const data = await res.json();  
+  return data; // { initOptions, items }
+};
 
-  return { imageOfTheDay, imageOfTheDayItem, blurredImage, unblurredImage, todayKey }
-}
+const fetchDaily = async () => {
+  const res = await fetch(`${API_BASE}/daily`);
+  const data = await res.json();
+  return data; // { imageOfTheDay, imageOfTheDayItem, blurredImage, unblurredImage, todayKey }
+};
 
-// random play
-const fetchRandomImage = async ( initOptions, items ) => {
-  const randomImage = initOptions[Math.floor(Math.random() * initOptions.length)]
-  const randomImageItem = items.find(item => item.memeName === randomImage)
-  const blurredRandomImage = await getFileUrlFromAws(randomImage + '.jpg', 1800, process.env.AWS_DESTINATION_NAME)
-  const unblurredRandomImage = await getFileUrlFromAws(randomImage + '.jpg', 1800, process.env.AWS_SOURCE_NAME)
-
-  return { randomImage, randomImageItem, blurredRandomImage, unblurredRandomImage }
-}
+const fetchRandom = async () => {
+  const res = await fetch(`${API_BASE}/random`);
+  const data = await res.json();
+  return data; // { randomImage, randomImageItem, blurredRandomImage, unblurredRandomImage }
+};
 
 function App() {
   // State variables
   const [options, setOptions] = useState(null);
+  const [initOptions, setInitOptions] = useState(null);
   const [refreshKey, setRefreshKey] = useState(0);
   const [todayKey, setTodayKey] = useState(null);
   const [blurredImage, setBlurredImage] = useState(null);
@@ -76,31 +61,42 @@ function App() {
   const [count, setCount] = useState(0)
   const [gameEnd, setGameEnd] = useState(false)
   const [result, setResult] = useState(false)
-
+  // data fetching
   useEffect(() => {
     const loadData = async () => {
       try { 
-        const { initOptions, items } = await fetchOptionsFromS3()
-        const { randomImage, randomImageItem, blurredRandomImage, unblurredRandomImage } = await fetchRandomImage( initOptions, items )
-        const { imageOfTheDay, imageOfTheDayItem, blurredImage, unblurredImage, todayKey } = await fetchDaily( initOptions, items )
-        setTodayKey(todayKey);  
-        setOptions(initOptions);
-        setImageOfTheDay(imageOfTheDay);
-        setBlurredImage(blurredImage);
-        setUnblurredImage(unblurredImage);
-        setImageOfTheDayItem(imageOfTheDayItem);
-        setRandomImage(randomImage);
-        setRandomImageItem(randomImageItem);
-        setBlurredRandomImage(blurredRandomImage);
-        setUnblurredRandomImage(unblurredRandomImage);
-        setItems(items);
-      } catch (error) { 
+        if (initOptions !== null) {
+          console.log("Options already loaded, skipping options fetch.");
+          setOptions(initOptions);
+        } else {
+          const { initOptions, items } = await fetchOptions();
+          
+          const { randomImage, randomImageItem, blurredRandomImage, unblurredRandomImage } = await fetchRandom( initOptions, items );
+
+          setInitOptions(initOptions);
+          setOptions(initOptions);
+          setRandomImage(randomImage);
+          setRandomImageItem(randomImageItem);
+          setBlurredRandomImage(blurredRandomImage);
+          setUnblurredRandomImage(unblurredRandomImage);
+          setItems(items);
+          
+          if (!todayKey) {
+            const { imageOfTheDay, imageOfTheDayItem, blurredImage, unblurredImage, todayKey } = await fetchDaily(initOptions, items);
+            setImageOfTheDay(imageOfTheDay);
+            setImageOfTheDayItem(imageOfTheDayItem);
+            setBlurredImage(blurredImage);
+            setUnblurredImage(unblurredImage);
+            setTodayKey(todayKey);
+          }
+        }
+      } catch (error) {
         console.error('Error loading data:', error);
       }
-    }
-    
+    };
+
     loadData();
-  }, [refreshKey]); 
+  }, [refreshKey]);
   
   //localstorage check for daily game
   useEffect(() => {
@@ -124,9 +120,15 @@ function App() {
     }
     
   }, [todayKey]);
-
+  
   const onChange = (event) => { 
     if (!event) return;
+    
+    if (!options.includes(event)) {
+      console.warn("Selected option is not valid:", event);
+      return;
+    }
+
     setGuess(prev => [...prev, event])
     setCount(prev => prev + 1)
     setOptions(options.filter(opt => opt !== event))
@@ -141,6 +143,12 @@ function App() {
 
   const onChangeDaily = (event) => { 
     if (!event) return;
+
+    if (!options.includes(event)) {
+      console.warn("Selected option is not valid:", event);
+      return;
+    }
+
     const newGuesses = [...dailyGuess, event];
     setDailyGuess(newGuesses);
     setDailyCount(prev => prev + 1);
