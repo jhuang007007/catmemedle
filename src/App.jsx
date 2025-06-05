@@ -35,7 +35,6 @@ const fetchRandom = async () => {
 };
 
 function App() {
-  // State variables
   const [options, setOptions] = useState(null);
   const [initOptions, setInitOptions] = useState(null);
   const [refreshKey, setRefreshKey] = useState(0);
@@ -49,47 +48,91 @@ function App() {
   const [randomImageItem, setRandomImageItem] = useState(null);
   const [randomImage, setRandomImage] = useState(null);
   const [items, setItems] = useState(null);
-  //daily play
-  const [dailyResult, setDailyResult] = useState(null); 
+  // Daily play
   const [dailyStart, setDailyStart] = useState(false)
-  const [dailyCount, setDailyCount] = useState(0)
   const [dailyGuess, setDailyGuess] = useState([])
+  const [dailyCount, setDailyCount] = useState(0)
   const [dailyGameEnd, setDailyGameEnd] = useState(false)
-  //random play
+  const [dailyResult, setDailyResult] = useState(null); 
+  // Random play
   const [randomStart, setRandomStart] = useState(false)
   const [guess, setGuess] = useState([])
   const [count, setCount] = useState(0)
   const [gameEnd, setGameEnd] = useState(false)
   const [result, setResult] = useState(false)
-  // data fetching
+  // Data fetching
   useEffect(() => {
     const loadData = async () => {
-      try { 
-        if (initOptions !== null) {
-          console.log("Options already loaded, skipping options fetch.");
-          setOptions(initOptions);
-        } else {
-          const { initOptions, items } = await fetchOptions();
-          
-          const { randomImage, randomImageItem, blurredRandomImage, unblurredRandomImage } = await fetchRandom( initOptions, items );
+      try {
+        let finalInitOptions = initOptions;
+        let finalItems = items;
 
-          setInitOptions(initOptions);
+        const needsOptions = !initOptions || !items;
+
+        if (needsOptions) {
+          const { initOptions: fetchedOptions, items: fetchedItems } = await fetchOptions();
+          finalInitOptions = fetchedOptions;
+          finalItems = fetchedItems;
+
+          setInitOptions(fetchedOptions);
+          setOptions(fetchedOptions);
+          setItems(fetchedItems);
+        } else {
           setOptions(initOptions);
-          setRandomImage(randomImage);
-          setRandomImageItem(randomImageItem);
-          setBlurredRandomImage(blurredRandomImage);
-          setUnblurredRandomImage(unblurredRandomImage);
-          setItems(items);
-          
-          if (!todayKey) {
-            const { imageOfTheDay, imageOfTheDayItem, blurredImage, unblurredImage, todayKey } = await fetchDaily(initOptions, items);
-            setImageOfTheDay(imageOfTheDay);
-            setImageOfTheDayItem(imageOfTheDayItem);
-            setBlurredImage(blurredImage);
-            setUnblurredImage(unblurredImage);
-            setTodayKey(todayKey);
+        }
+
+        const {
+          randomImage,
+          randomImageItem,
+          blurredRandomImage,
+          unblurredRandomImage
+        } = await fetchRandom(finalInitOptions, finalItems);
+
+        setRandomImage(randomImage);
+        setRandomImageItem(randomImageItem);
+        setBlurredRandomImage(blurredRandomImage);
+        setUnblurredRandomImage(unblurredRandomImage);
+
+        let resolvedTodayKey = todayKey;
+
+        if (!todayKey) {
+          const {
+            imageOfTheDay,
+            imageOfTheDayItem,
+            blurredImage,
+            unblurredImage,
+            todayKey: fetchedTodayKey
+          } = await fetchDaily(finalInitOptions, finalItems);
+
+          setImageOfTheDay(imageOfTheDay);
+          setImageOfTheDayItem(imageOfTheDayItem);
+          setBlurredImage(blurredImage);
+          setUnblurredImage(unblurredImage);
+          setTodayKey(fetchedTodayKey);
+
+          resolvedTodayKey = fetchedTodayKey;
+        }
+
+        // Handle localStorage for daily result
+        if (resolvedTodayKey) {
+          const storedResult = localStorage.getItem(resolvedTodayKey);
+          try {
+            if (storedResult) {
+              const parsed = JSON.parse(storedResult);
+              if (parsed?.guesses && Array.isArray(parsed.guesses)) {
+                setDailyResult(parsed.result);
+                setDailyGuess(parsed.guesses);
+                setDailyCount(parsed.guesses.length);
+                setDailyGameEnd(true);
+              } else {
+                console.warn("Malformed localStorage data:", parsed);
+              }
+            }
+          } catch (err) {
+            console.error("Failed to parse localStorage item:", err);
           }
         }
+
       } catch (error) {
         console.error('Error loading data:', error);
       }
@@ -97,30 +140,7 @@ function App() {
 
     loadData();
   }, [refreshKey]);
-  
-  //localstorage check for daily game
-  useEffect(() => {
-    if (todayKey) {
-      const storedResult = localStorage.getItem(todayKey);
-      try {
-        if (storedResult) {
-          const parsed = JSON.parse(storedResult);
-          if (parsed?.guesses && Array.isArray(parsed.guesses)) {
-            setDailyResult(parsed.result);
-            setDailyGuess(parsed.guesses);
-            setDailyCount(parsed.guesses.length);
-            setDailyGameEnd(true);
-          } else {
-            console.warn("Malformed localStorage data:", parsed);
-          }
-        }
-      } catch (err) {
-        console.error("Failed to parse localStorage item:", err);
-      }
-    }
-    
-  }, [todayKey]);
-  
+
   const onChange = (event) => { 
     if (!event) return;
     
