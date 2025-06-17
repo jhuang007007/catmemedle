@@ -214,7 +214,7 @@ function App() {
             {dailyStart && <ImageContainer img={!dailyGameEnd && blurredImage || unblurredImage} />}
             {randomStart && <ImageContainer img={!gameEnd && blurredRandomImage || unblurredRandomImage} />}
           </Box>
-          <Box width={"40%"} >
+          <Box>
             {dailyStart && dailyGameEnd && <ResultPopup answer={ imageOfTheDay } result={ dailyResult }/>}
             {dailyStart && dailyCount>=1 && <GuessHeaders />}
             {dailyStart && dailyCount>=1 && <Guess guess={items.find(item => item.memeName === dailyGuess[0])} answer={imageOfTheDayItem}/>}

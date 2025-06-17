@@ -6,7 +6,7 @@ function ImageContainer({img}) {
     <Box 
       component="img"
       src={img}
-      alt="Mystery Cat Meme" 
+      alt="Mystery Cat Meme (May take a few seconds to load)" 
       sx={styles.image} 
     />
   )
