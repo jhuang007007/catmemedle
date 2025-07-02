@@ -11,6 +11,7 @@ Catmemedle, https://www.catmemedle.org/, is hosted on S3 + AWS Cloudfront guided
 Catmemedle uses a combination of AWS S3 and DynamoDB to store the image data.
 
 ## Image Processing
+![screenshot](src/assets/Catmemedle%20AWS%20Diagram.jpg)
 
 Catmemedle uses an automated serverless approach to blur the images. Method adapted from [this blog post](https://aws.amazon.com/blogs/compute/creating-a-serverless-face-blurring-service-for-photos-in-amazon-s3/) by James Beswick @jbesw:
 
